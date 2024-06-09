@@ -1,0 +1,26 @@
+{
+    "ccms":{
+        "username":"rajishs",
+        "password":"Sbl@12345",
+        "url":"http://192.168.100.72/login"
+    },
+    "ftp":{
+        "username":"psd",
+        "password":"psd123",
+        "server":"192.168.100.17",
+        "port":21
+    },   
+    "psd_database_prepaid_card":{
+        "username" : "fcjglhist",
+        "password" : "fcjglhist",
+        "host_name" : "192.168.0.1",
+        "port" : "1521",
+        "service" : "SBLDB"
+    },
+    "smtp":{
+        "account":"ram.sharma@sbl.com.np",
+        "password":"@Python1",
+        "port":"25",
+        "server":"192.168.100.2"
+    }
+}
