@@ -126,18 +126,43 @@ class FTPComponent(QRComponent):
 
 
 
-    def list_and_download_txt_files(self, download_dir):
-        """
-        List all files in the FTP server and download files with '.txt' extension to the specified directory.
-        """
-        logger = self.run_item.logger
+    # def list_and_download_txt_files(self, download_dir):
+    #     """
+    #     List all files in the FTP server and download files with '.txt' extension to the specified directory.
+    #     """
+    #     logger = self.run_item.logger
+    #     listed_data = self.__ftp.nlst()
+    #     logger.info(f"Listed data is {listed_data}")
+        
+    #     txt_files = [file for file in listed_data if file.endswith('.gpg')]
+        
+    #     for txt_file in txt_files:
+    #         local_file_path = os.path.join(download_dir, txt_file)
+    #         with open(local_file_path, 'wb') as local_file:
+    #             self.__ftp.retrbinary(f'RETR {txt_file}', local_file.write)
+    #         logger.info(f"Downloaded {txt_file} to {local_file_path}")
+
+
+def list_and_download_txt_files(self, download_dir):
+    """
+    List all files in the FTP server and download files with '.gpg' extension to the specified directory.
+    """
+    logger = self.run_item.logger
+    retries = 0
+    while retries < 36:  # Retry for up to 3 hours (36 retries with a 5-minute interval)
         listed_data = self.__ftp.nlst()
         logger.info(f"Listed data is {listed_data}")
-        
         txt_files = [file for file in listed_data if file.endswith('.gpg')]
-        
-        for txt_file in txt_files:
-            local_file_path = os.path.join(download_dir, txt_file)
-            with open(local_file_path, 'wb') as local_file:
-                self.__ftp.retrbinary(f'RETR {txt_file}', local_file.write)
-            logger.info(f"Downloaded {txt_file} to {local_file_path}")
+        if txt_files:
+            for txt_file in txt_files:
+                local_file_path = os.path.join(download_dir, txt_file)
+                with open(local_file_path, 'wb') as local_file:
+                    self.__ftp.retrbinary(f'RETR {txt_file}', local_file.write)
+                logger.info(f"Downloaded {txt_file} to {local_file_path}")
+            break  # Break out of the loop if txt files are found and downloaded
+        else:
+            logger.info("No .gpg files found. Retrying in 5 minutes...")
+            time.sleep(300)  # Wait for 5 minutes before retrying
+            retries += 1
+    else:
+        logger.info("No .gpg files found even after waiting for 3 hours.")
